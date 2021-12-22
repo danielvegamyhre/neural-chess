@@ -36,7 +36,7 @@ def get_dataset() -> tuple[list[np.ndarray], list[int]]:
                 if result == "*":
                     continue
 
-                value: int = {"1-0": 1, "0-1": -1, "1/2-1/2": 0}[result]
+                value: int = {"1-0": 0, "0-1": 1, "1/2-1/2": 2}[result]
 
                 # input = board state, label = value/result
                 for i, move in enumerate(game.mainline_moves()):
@@ -48,4 +48,4 @@ def get_dataset() -> tuple[list[np.ndarray], list[int]]:
 
 if __name__ == "__main__":
     X, Y = get_dataset()
-    np.savez("processed/dataset.npz", X, Y)
+    np.savez("processed/dataset.npz", X=X, Y=Y)
