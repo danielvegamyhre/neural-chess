@@ -3,7 +3,6 @@ from pathlib import Path
 
 import numpy as np
 import torch
-import torch.nn.functional as F
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
@@ -25,6 +24,10 @@ class ChessDataset(Dataset):
 
 
 class MLP(nn.Module):
+    """
+    Feed-forward multi-layer perceptron that predicts probabilities of win/loss/draw.
+    """
+
     def __init__(self):
         super(MLP, self).__init__()
 
@@ -37,13 +40,13 @@ class MLP(nn.Module):
         self.relu2 = nn.ReLU()
 
         # hidden layer 3
-        self.l4 = nn.Linear(100, 20)  # input shape 100 -> output to layer 20 units
-        self.relu4 = nn.ReLU()
+        self.l3 = nn.Linear(100, 20)  # input shape 100 -> output to layer 20 units
+        self.relu3 = nn.ReLU()
 
         # output layer
-        self.l5 = nn.Linear(
-            20, 3
-        )  # input shape 20 -> output layer 3 units (wine/lose/draw classifier)
+        self.l4 = nn.Linear(
+            20, 1
+        )  # input shape 20 -> output layer 1 unit (value from -1 to 1)
 
     def forward(self, X):
         out = self.l1(X)
@@ -52,11 +55,11 @@ class MLP(nn.Module):
         out = self.l2(out)
         out = self.relu2(out)
 
-        out = self.l4(out)
-        out = self.relu4(out)
+        out = self.l3(out)
+        out = self.relu3(out)
 
-        out = F.log_softmax(self.l5(out), dim=1)
-        return out
+        out = self.l4(out)
+        return torch.tanh(out)
 
 
 dataset = ChessDataset()
@@ -69,20 +72,21 @@ def train():
     # train model
     model = MLP()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-    error = nn.CrossEntropyLoss()
+    error = nn.MSELoss()
 
     print("Training model...")
-    correct, total = 0, 0
+    all_loss, num_loss = 0, 0
     for epoch in range(EPOCHS):
         for X, y in tqdm(train_dataloader):
+            y = y.unsqueeze(-1)
+            X = X.float()
+            y = y.float()
+
             # clear gradients
             optimizer.zero_grad()
 
             # forward pass
-            out = model(X.float())
-            pred = torch.max(out, 1)[1]
-            correct += torch.sum(pred == y).item()
-            total += len(pred)
+            out = model(X)
 
             # compute loss
             loss = error(out, y)
@@ -93,23 +97,15 @@ def train():
             # update parameters
             optimizer.step()
 
+            all_loss += loss.item()
+            num_loss += 1
+
         # print train loss
-        print(f"Epoch {epoch} Loss: {loss}")
-        print(f"Train accuracy: {correct/total}")
+        print(f"Epoch {epoch} Loss: {all_loss/num_loss}")
 
     # store model on disk
     with open("processed/model.pickle", "wb") as fp:
         pickle.dump(model, fp)
-
-    # evaluate model
-    # print('Evaluating accuracy...')
-    # correct, total = 0, 0
-    # for X, y in tqdm(test_dataloader):
-    #     y_preds = model(X.float())
-    #     pred = torch.max(y_preds,1)[1]
-    #     correct += torch.sum(pred==y).item()
-    #     total += len(pred)
-    # print(f'Test accuracy: {correct/total}')
 
 
 if __name__ == "__main__":

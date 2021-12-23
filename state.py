@@ -3,8 +3,11 @@ import numpy as np
 
 
 class State:
-    def __init__(self, board: chess.Board):
-        self.board = board
+    def __init__(self, board=None):
+        if board is None:
+            self.board = chess.Board()
+        else:
+            self.board = board
 
     def serialize(self) -> np.ndarray:
         """
@@ -18,7 +21,7 @@ class State:
         state[68] = black queenside castling rights
         """
         assert self.board.is_valid()
-        state = np.zeros((8 * 8, 5))
+        state = np.zeros(8 * 8 + 5)
 
         # https://stackoverflow.com/questions/55876336/is-there-a-way-to-convert-a-python-chess-board-into-a-list-of-integers
         state = np.zeros(64 + 5)
@@ -48,4 +51,4 @@ class State:
         return state
 
     def edges(self) -> list:
-        return list(self.board.legal_moves())
+        return list(self.board.legal_moves)

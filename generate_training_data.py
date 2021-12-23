@@ -26,6 +26,9 @@ def get_dataset() -> tuple[list[np.ndarray], list[int]]:
                 except Exception:
                     break
 
+                if game is None:
+                    continue
+
                 game_count += 1
                 print(f"parsing game {game_count} examples {len(X)}")
 
@@ -36,7 +39,7 @@ def get_dataset() -> tuple[list[np.ndarray], list[int]]:
                 if result == "*":
                     continue
 
-                value: int = {"1-0": 0, "0-1": 1, "1/2-1/2": 2}[result]
+                value: int = {"1-0": 1, "0-1": -1, "1/2-1/2": 0}[result]
 
                 # input = board state, label = value/result
                 for i, move in enumerate(game.mainline_moves()):
