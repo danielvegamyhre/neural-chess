@@ -4,7 +4,7 @@ It's not the best chess engine, but it is a chess engine.
 
 Proof of concept neural network chess engine (feed-forward multi-layer perceptron trained on Gary Kasaparov's [games](https://www.pgnmentor.com/)). 
 
-**Spoiler alert**: it does not play as well as Kasparov.
+**Spoiler alert**: it does not play as well as Kasparov.... :laughing:
 
 Naive goal of predicting probability of winning based on board position (i.e. during training, every move in a game that was won is considered a "good move", any move in a game that was lost is considered a "bad move", and moves from drawn games have no value.
 
