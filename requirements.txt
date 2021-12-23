@@ -1,0 +1,17 @@
+chess==1.7.0
+click==8.0.3
+Flask==2.0.2
+itsdangerous==2.0.1
+Jinja2==3.0.3
+joblib==1.1.0
+MarkupSafe==2.0.1
+numpy==1.21.5
+pathlib==1.0.1
+scikit-learn==1.0.1
+scipy==1.7.3
+sklearn==0.0
+threadpoolctl==3.0.0
+torch==1.10.1
+tqdm==4.62.3
+typing_extensions==4.0.1
+Werkzeug==2.0.2

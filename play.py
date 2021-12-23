@@ -27,7 +27,6 @@ def find_best_move(s: State, v: Valuator) -> chess.Move:
         s.board.push(move)
         moves.append((v(s), move))
         s.board.pop()
-    print(moves)
     sorted_moves = sorted(moves, reverse=s.board.turn, key=lambda x: x[0])
     if not sorted_moves:
         return
