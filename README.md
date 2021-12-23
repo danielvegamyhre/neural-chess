@@ -13,3 +13,6 @@ Naive goal of predicting probability of winning based on board position (i.e. du
 # Installation
 1. Install requirements with ```python3 -m pip install -r requirements.txt```
 2. Run app with ```python3 play.py```
+
+### Credits
+Inspired by George Hotz' twitchchess [stream](https://www.youtube.com/watch?v=RFaFmkCEGEs)
